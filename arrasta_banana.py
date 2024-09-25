@@ -61,24 +61,28 @@ def copy_with_progress(src, dst):
 def prepare_destination_giben(nome_pasta, folder, furacao_path):
     source_giben = os.path.join(folder, "giben")
     destination_giben = os.path.join(furacao_path, nome_pasta, "giben")
-    os.makedirs(os.path.dirname(destination_giben), exist_ok=True)
 
-    if os.path.exists(source_giben):
-        log_message("Copiando arquivos de furação...")
-        copy_with_progress(source_giben, destination_giben)
-    else:
-        log_message(f"A pasta \"giben\" não foi encontrada em \"{folder}\".")
+    if not os.path.exists(source_giben):
+        log_message(f"A pasta \"giben\" não foi encontrada em \"{folder}\". Backup cancelado.")
+        return False
+
+    os.makedirs(os.path.dirname(destination_giben), exist_ok=True)
+    log_message("Copiando arquivos de furação...")
+    copy_with_progress(source_giben, destination_giben)
+    return True
 
 def prepare_destination_img(nome_pasta, img_path, etiqueta_path):
     source_img = os.path.join(img_path, nome_pasta)
     destination_etiqueta = os.path.join(etiqueta_path, nome_pasta)
-    os.makedirs(destination_etiqueta, exist_ok=True)
 
-    if os.path.exists(source_img):
-        log_message("Copiando Etiquetas...")
-        copy_with_progress(source_img, destination_etiqueta)
-    else:
-        log_message("A pasta ETIQUETA LOCAL não foi encontrada.")
+    if not os.path.exists(source_img):
+        log_message("A pasta ETIQUETA LOCAL não foi encontrada. Backup cancelado.")
+        return False
+
+    os.makedirs(destination_etiqueta, exist_ok=True)
+    log_message("Copiando Etiquetas...")
+    copy_with_progress(source_img, destination_etiqueta)
+    return True
 
 def backup_folder(folder, nome_pasta, backup_path, categoria):
     final_backup_path = os.path.join(backup_path, categoria, nome_pasta)
@@ -92,10 +96,10 @@ def start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etique
     categoria = get_backup_category(nome_pasta, categorias)
     log_message(f"Nome da pasta: {nome_pasta}")
     log_message(f"Iniciando Backup... {categoria}")
-    
-    prepare_destination_giben(nome_pasta, folder, furacao_path)
-    prepare_destination_img(nome_pasta, img_path, etiqueta_path)
-    backup_folder(folder, nome_pasta, backup_path, categoria)
+
+    if prepare_destination_giben(nome_pasta, folder, furacao_path):
+        if prepare_destination_img(nome_pasta, img_path, etiqueta_path):
+            backup_folder(folder, nome_pasta, backup_path, categoria)
 
 def close_window():
     root.quit()  # Fecha a janela Tkinter
@@ -132,6 +136,8 @@ def main():
         return
 
     nome_pasta = os.path.basename(folder)
+
+    root.protocol("WM_DELETE_WINDOW", close_window)
 
     start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etiqueta_path, categorias)
 
