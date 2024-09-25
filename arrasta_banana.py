@@ -2,6 +2,7 @@ import os
 import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+import sys
 
 def load_categories(filename):
     categorias = {}
@@ -130,9 +131,14 @@ def main():
 
     categorias = load_categories(categorias_file)
 
-    folder = select_folder()
-    if not folder:
-        messagebox.showwarning("Aviso", "Nenhuma pasta selecionada.")
+    # Verifica se um caminho foi passado como argumento
+    if len(sys.argv) > 1:
+        folder = sys.argv[1]  # Pega o primeiro argumento
+    else:
+        folder = select_folder()  # Se não, usa o seletor de pastas
+
+    if not os.path.exists(folder):
+        messagebox.showwarning("Aviso", "O caminho selecionado não existe.")
         return
 
     nome_pasta = os.path.basename(folder)
