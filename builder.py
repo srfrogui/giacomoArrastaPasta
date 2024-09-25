@@ -18,5 +18,5 @@ setup(
     version="0.1",
     description="Script de backup automatizado",
     options={"build_exe": build_exe_options},
-    executables=[Executable("arrastador_de_banana.py", base=base, icon="banana.ico")]
+    executables=[Executable("arrasta_banana.py", base=base, icon="banana.ico")]
 )
