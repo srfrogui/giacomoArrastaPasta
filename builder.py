@@ -5,7 +5,7 @@ import sys
 build_exe_options = {
     "packages": ["tkinter", "os", "shutil"],  # Adicione pacotes adicionais aqui, se necessário
     "excludes": [],  # Exclua pacotes desnecessários
-    "include_files": ["README.md", "categoria.txt", "banana.ico"],  # Inclua arquivos adicionais no executável
+    "include_files": ["README.md"],  # Inclua arquivos adicionais no executável
 }
 
 # Define o ícone do executável
