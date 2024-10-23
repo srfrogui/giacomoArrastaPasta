@@ -60,11 +60,11 @@ def copy_with_progress(src, dst):
     progress_label.config(text='Cópia concluída!')
 
 def prepare_destination_giben(nome_pasta, folder, furacao_path):
-    source_giben = os.path.join(folder, "giben")
-    destination_giben = os.path.join(furacao_path, nome_pasta, "giben")
+    source_giben = os.path.join(folder, "Giben")
+    destination_giben = os.path.join(furacao_path, nome_pasta, "Giben")
 
     if not os.path.exists(source_giben):
-        log_message(f"A pasta \"giben\" não foi encontrada em \"{folder}\". Backup cancelado.")
+        log_message(f"A pasta \"Giben\" não foi encontrada em \"{folder}\". Backup cancelado.")
         return False
 
     os.makedirs(os.path.dirname(destination_giben), exist_ok=True)
@@ -72,7 +72,7 @@ def prepare_destination_giben(nome_pasta, folder, furacao_path):
     copy_with_progress(source_giben, destination_giben)
     return True
 
-def prepare_destination_img(nome_pasta, img_path, etiqueta_path):
+def prepare_destination_img(nome_pasta, img_path, etiqueta_path): #nome_pasta = nome_pasta + '\Gplan\\' #mefudecomatualizacao
     source_img = os.path.join(img_path, nome_pasta)
     destination_etiqueta = os.path.join(etiqueta_path, nome_pasta)
 
