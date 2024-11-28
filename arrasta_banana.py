@@ -71,8 +71,26 @@ def prepare_destination_giben(nome_pasta, folder, furacao_path):
     log_message("Copiando arquivos de furação...")
     copy_with_progress(source_giben, destination_giben)
     return True
+    
+def prepare_destination_nesting(nome_pasta, folder, corte_path):
+    # Check if 'Nesting' folder exists within the 'folder'
+    source_nesting = os.path.join(folder, "Nesting")
+    
+    # Proceed only if the 'Nesting' folder exists
+    if os.path.exists(source_nesting) and os.path.isdir(source_nesting):
+        destination_nesting = os.path.join(corte_path, nome_pasta, "Nesting")
+        
+        # Create the destination directory if it doesn't exist
+        os.makedirs(os.path.dirname(destination_nesting), exist_ok=True)
+        
+        # Log message and copy the files with progress
+        log_message("Copiando arquivos de Nesting...")
+        copy_with_progress(source_nesting, destination_nesting)
+    else:
+        log_message("A pasta 'Nesting' não foi encontrada, pulando a cópia.")
 
-def prepare_destination_img(nome_pasta, img_path, etiqueta_path): #nome_pasta = nome_pasta + '\Gplan\\' #mefudecomatualizacao
+def prepare_destination_img(nome_pasta, img_path, etiqueta_path): 
+    nome_pasta = os.path.join(nome_pasta, "Gplan") #mefudecomatualizacao
     source_img = os.path.join(img_path, nome_pasta)
     destination_etiqueta = os.path.join(etiqueta_path, nome_pasta)
 
@@ -93,11 +111,13 @@ def backup_folder(folder, nome_pasta, backup_path, categoria):
     log_message("Backup Completo!")
     root.after(2000, close_window)  # Aguarda 2 segundos e fecha a janela
 
-def start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etiqueta_path, categorias):
+def start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etiqueta_path, categorias, nesting_path):
     categoria = get_backup_category(nome_pasta, categorias)
     log_message(f"Nome da pasta: {nome_pasta}")
     log_message(f"Iniciando Backup... {categoria}")
-
+    
+    prepare_destination_nesting(nome_pasta, folder, nesting_path)
+    
     if prepare_destination_giben(nome_pasta, folder, furacao_path):
         if prepare_destination_img(nome_pasta, img_path, etiqueta_path):
             backup_folder(folder, nome_pasta, backup_path, categoria)
@@ -114,7 +134,8 @@ def main():
     img_path = r'C:\Giben\GvisionXPPROMOB\CNC\Media\Img'
     etiqueta_path = r'X:\ETIQUETA GVISION GPLAN PROMOB'
     categorias_file = 'categoria.txt'
-
+    nesting_path= r'X:\CORTE G2 NESTING'
+    
     root = tk.Tk()
     root.title("Backup de Pastas")
     root.geometry("400x300")
@@ -145,7 +166,7 @@ def main():
 
     root.protocol("WM_DELETE_WINDOW", close_window)
 
-    start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etiqueta_path, categorias)
+    start_backup(folder, nome_pasta, backup_path, furacao_path, img_path, etiqueta_path, categorias, nesting_path)
 
     root.mainloop()
 
